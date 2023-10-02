@@ -1,0 +1,103 @@
+openapi: "3.0.0"
+paths:
+  /ping:
+    get:
+      operationId: ping
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pong'
+  /todo/{userid}:
+    get:
+      operationId: GetTodo
+      parameters:
+        - in: path
+          name: userid
+          schema:
+            type: string
+          required: true
+          description: todo user identifier
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+  /todo:
+    get:
+      operationId: ListTodos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+    post:
+      operationId: SaveTodo
+      requestBody:
+        description: todo message to save
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveTodoCommand'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
+components:
+  schemas:
+    Pong:
+      type: object
+      required:
+        - value  
+      properties:
+        value:
+          type: string
+    SaveTodoCommand:
+      type: object
+      required:
+        - msg  
+      properties:
+        msg:
+          type: string
+    SaveTodoResult:
+      type: object
+      required:
+        - result  
+      properties:
+        result:
+          type: string  
+    Todo:
+      type: object
+      required:
+        - Msg  
+        - Status  
+        - UserID 
+      properties:
+        Msg:
+          type: string  
+        Status:
+          type: string  
+        UserID:
+          type: string  
+    Todos:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/Todo'
+    Response:
+      type: object
+      properties:
+        result:
+          oneOf:
+            - $ref: '#/components/schemas/SaveTodoResult'
+            - $ref: '#/components/schemas/Todo'
+            - $ref: '#/components/schemas/Todos'
+        error:
+          type: string
